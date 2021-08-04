@@ -49,6 +49,8 @@ EOF
 
 echo -e '#!/bin/bash\n\nexit 0' > /etc/powergslb/powergslb-check
 
+chmod 777 /etc/powergslb/powergslb-check
+
 echo -e '#!/usr/bin/env python2.7\n' > /etc/powergslb/load-balancing-check
 cat << EOF >> /etc/powergslb/load-balancing-check
 import socket
@@ -64,6 +66,8 @@ try:
 except Exception as e:
     sys.exit(1)
 EOF
+
+chmod 777 /etc/powergslb/load-balancing-check
 
 pkill -f /usr/libexec/mysqld
 
