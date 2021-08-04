@@ -26,6 +26,7 @@ PowerGSLB is a simple DNS based Global Server Load Balancing (GSLB) solution.
   - [Building PowerGSLB RPM packages](#building-powergslb-rpm-packages)
   - [Using PowerGSLB Docker image](#using-powergslb-docker-image)
   - [Building PowerGSLB Docker image](#building-powergslb-docker-image)
+  - [Using PowerGSLB LB Client](#using-powergslb-lb-client)
 
 
 ## Main features
@@ -88,7 +89,7 @@ yum -y install python2-pip
 
 pip install pyping
 
-VERSION=1.7.4
+VERSION=1.7.5
 yum -y --setopt=tsflags= install \
     "https://github.com/kuuhaku86/powergslb/releases/download/$VERSION/powergslb-$VERSION-1.el7.noarch.rpm" \
     "https://github.com/kuuhaku86/powergslb/releases/download/$VERSION/powergslb-admin-$VERSION-1.el7.noarch.rpm" \
@@ -113,7 +114,7 @@ systemctl status mariadb.service
 
 mysql_secure_installation
 
-VERSION=1.7.4
+VERSION=1.7.5
 mysql -p << EOF
 CREATE DATABASE powergslb;
 GRANT ALL ON powergslb.* TO powergslb@localhost IDENTIFIED BY 'your-database-password-here';
@@ -232,7 +233,7 @@ Please read [How to create an RPM package](https://fedoraproject.org/wiki/How_to
 yum -y update
 yum -y install @Development\ Tools
 
-VERSION=1.7.4
+VERSION=1.7.5
 curl "https://codeload.github.com/kuuhaku86/powergslb/tar.gz/$VERSION" -o "powergslb-$VERSION.tar.gz"
 rpmbuild -tb --define "version $VERSION" "powergslb-$VERSION.tar.gz"
 ```
@@ -250,7 +251,7 @@ Upon successful completion you will have three packages
 For quick setup, you can pull all-in-one Docker image from docker.io.
 
 ```
-VERSION=1.7.4
+VERSION=1.7.5
 
 docker pull docker.io/kuuhaku86/powergslb:"$VERSION"
 
@@ -277,8 +278,22 @@ semanage boolean --modify --on container_manage_cgroup
 To create an all-in-one Docker image.
 
 ```
-VERSION=1.7.4
+VERSION=1.7.5
 
 docker build -f docker/Dockerfile --build-arg VERSION="$VERSION" \
     --force-rm --no-cache -t powergslb:"$VERSION" https://github.com/kuuhaku86/powergslb.git
+```
+
+## Using PowerGSLB LB Client
+
+Run with docker
+
+```
+VERSION=1.7.5
+
+docker run -itd -p 8600:8600/tcp -p 8600:8600/udp \
+    docker.io/kuuhaku86/powergslb-lb-client:"$VERSION"
+  
+# Use this for testing (Change 1G with memory that you want to be occupied)
+stress -m 1 --vm-bytes 1G --vm-keep
 ```
