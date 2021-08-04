@@ -5,25 +5,27 @@ PowerGSLB is a simple DNS based Global Server Load Balancing (GSLB) solution.
 
 ## Table of Contents
 
-* [Main features](#main-features)
-* [Database diagram](#database-diagram)
-* [Class diagram](#class-diagram)
-* [Web based administration interface](#web-based-administration-interface)
-* [Installation on CentOS 7](#installation-on-centos-7)
-  * [Setup PowerGSLB and PowerDNS](#setup-powergslb-and-powerdns)
-  * [Setup MariaDB](#setup-mariadb)
-  * [Start services](#start-services)
-  * [Test PowerGSLB](#test-powergslb)
-  * [Web based administration interface](#web-based-administration-interface-1)
-* [Health checks](#health-checks)
-  * [Mandatory parameters](#mandatory-parameters)
-  * [Exec parameters](#exec-parameters)
-  * [ICMP parameters](#icmp-parameters)
-  * [HTTP parameters](#http-parameters)
-  * [TCP parameters](#tcp-parameters)
-* [Building PowerGSLB RPM packages](#building-powergslb-rpm-packages)
-* [Using PowerGSLB Docker image](#using-powergslb-docker-image)
-* [Building PowerGSLB Docker image](#building-powergslb-docker-image)
+- [PowerGSLB - PowerDNS Remote GSLB Backend](#powergslb---powerdns-remote-gslb-backend)
+  - [Table of Contents](#table-of-contents)
+  - [Main features](#main-features)
+  - [Database diagram](#database-diagram)
+  - [Class diagram](#class-diagram)
+  - [Web based administration interface](#web-based-administration-interface)
+  - [Installation on CentOS 7](#installation-on-centos-7)
+    - [Setup PowerGSLB and PowerDNS](#setup-powergslb-and-powerdns)
+    - [Setup MariaDB](#setup-mariadb)
+    - [Start services](#start-services)
+    - [Test PowerGSLB](#test-powergslb)
+    - [Web based administration interface](#web-based-administration-interface-1)
+  - [Health checks](#health-checks)
+    - [Mandatory parameters](#mandatory-parameters)
+    - [Exec parameters](#exec-parameters)
+    - [ICMP parameters](#icmp-parameters)
+    - [HTTP parameters](#http-parameters)
+    - [TCP parameters](#tcp-parameters)
+  - [Building PowerGSLB RPM packages](#building-powergslb-rpm-packages)
+  - [Using PowerGSLB Docker image](#using-powergslb-docker-image)
+  - [Building PowerGSLB Docker image](#building-powergslb-docker-image)
 
 
 ## Main features
@@ -252,7 +254,7 @@ VERSION=1.7.4
 
 docker pull docker.io/alekseychudov/powergslb:"$VERSION"
 
-docker run -it --name powergslb --hostname powergslb \
+docker run -itd --name powergslb --hostname powergslb \
     -p 53:53/tcp -p 53:53/udp -p 443:443/tcp \
     --tmpfs /run --tmpfs /tmp -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
     docker.io/alekseychudov/powergslb:"$VERSION"
