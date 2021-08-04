@@ -55,26 +55,26 @@ PowerGSLB is a simple DNS based Global Server Load Balancing (GSLB) solution.
 
 ## Database diagram
 
-![](https://github.com/AlekseyChudov/powergslb/blob/master/images/database.png?raw=true)
+![](https://github.com/kuuhaku86/powergslb/blob/master/images/database.png?raw=true)
 
 
 ## Class diagram
 
-![](https://github.com/AlekseyChudov/powergslb/blob/master/images/class-diagram.png?raw=true)
+![](https://github.com/kuuhaku86/powergslb/blob/master/images/class-diagram.png?raw=true)
 
 
 ## Web based administration interface
 
 Status grid
-![](https://github.com/AlekseyChudov/powergslb/blob/master/images/web-status.png?raw=true)
+![](https://github.com/kuuhaku86/powergslb/blob/master/images/web-status.png?raw=true)
 
 Advanced search
-![](https://github.com/AlekseyChudov/powergslb/blob/master/images/web-search.png?raw=true)
+![](https://github.com/kuuhaku86/powergslb/blob/master/images/web-search.png?raw=true)
 
 Add new record
-![](https://github.com/AlekseyChudov/powergslb/blob/master/images/web-form.png?raw=true)
+![](https://github.com/kuuhaku86/powergslb/blob/master/images/web-form.png?raw=true)
 
-[More images](https://github.com/AlekseyChudov/powergslb/tree/master/images)
+[More images](https://github.com/kuuhaku86/powergslb/tree/master/images)
 
 
 ## Installation on CentOS 7
@@ -90,9 +90,9 @@ pip install pyping
 
 VERSION=1.7.4
 yum -y --setopt=tsflags= install \
-    "https://github.com/AlekseyChudov/powergslb/releases/download/$VERSION/powergslb-$VERSION-1.el7.noarch.rpm" \
-    "https://github.com/AlekseyChudov/powergslb/releases/download/$VERSION/powergslb-admin-$VERSION-1.el7.noarch.rpm" \
-    "https://github.com/AlekseyChudov/powergslb/releases/download/$VERSION/powergslb-pdns-$VERSION-1.el7.noarch.rpm"
+    "https://github.com/kuuhaku86/powergslb/releases/download/$VERSION/powergslb-$VERSION-1.el7.noarch.rpm" \
+    "https://github.com/kuuhaku86/powergslb/releases/download/$VERSION/powergslb-admin-$VERSION-1.el7.noarch.rpm" \
+    "https://github.com/kuuhaku86/powergslb/releases/download/$VERSION/powergslb-pdns-$VERSION-1.el7.noarch.rpm"
 
 sed -i 's/^password = .*/password = your-database-password-here/g' /etc/powergslb/powergslb.conf
 
@@ -233,7 +233,7 @@ yum -y update
 yum -y install @Development\ Tools
 
 VERSION=1.7.4
-curl "https://codeload.github.com/AlekseyChudov/powergslb/tar.gz/$VERSION" -o "powergslb-$VERSION.tar.gz"
+curl "https://codeload.github.com/kuuhaku86/powergslb/tar.gz/$VERSION" -o "powergslb-$VERSION.tar.gz"
 rpmbuild -tb --define "version $VERSION" "powergslb-$VERSION.tar.gz"
 ```
 
@@ -252,12 +252,12 @@ For quick setup, you can pull all-in-one Docker image from docker.io.
 ```
 VERSION=1.7.4
 
-docker pull docker.io/alekseychudov/powergslb:"$VERSION"
+docker pull docker.io/kuuhaku86/powergslb:"$VERSION"
 
 docker run -itd --name powergslb --hostname powergslb \
     -p 53:53/tcp -p 53:53/udp -p 443:443/tcp \
     --tmpfs /run --tmpfs /tmp -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    docker.io/alekseychudov/powergslb:"$VERSION"
+    docker.io/kuuhaku86/powergslb:"$VERSION"
 
 docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' powergslb
 
@@ -280,5 +280,5 @@ To create an all-in-one Docker image.
 VERSION=1.7.4
 
 docker build -f docker/Dockerfile --build-arg VERSION="$VERSION" \
-    --force-rm --no-cache -t powergslb:"$VERSION" https://github.com/AlekseyChudov/powergslb.git
+    --force-rm --no-cache -t powergslb:"$VERSION" https://github.com/kuuhaku86/powergslb.git
 ```
