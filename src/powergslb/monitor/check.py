@@ -52,7 +52,7 @@ class CheckThread(powergslb.system.AbstractThread):
         try:
             ip = self.monitor['ip']
             timeout = self.monitor['timeout'] * 1000
-            return pyping.ping(ip, timeout, count=1).ret_code == 0
+            return pyping.ping(ip, timeout, count=3).ret_code == 0
         except SystemExit:
             raise Exception('unknown host: {}'.format(self.monitor['ip']))
 
