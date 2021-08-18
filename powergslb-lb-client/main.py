@@ -6,6 +6,14 @@ import time
 def send_msg(sock_cli, data):
     sock_cli.send(data)
 
+def get_cpu_usage():
+    load1, load5, load15 = psutil.getloadavg()
+    return (load15/os.cpu_count()) * 100
+
+def get_memory_usage():
+    return psutil.virtual_memory()[2]
+
+
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 sock_server.bind(("0.0.0.0", 8600))
@@ -15,13 +23,13 @@ sock_server.listen(5)
 while True:
     sock_cli, addr_cli = sock_server.accept()
 
-    load1, load5, load15 = psutil.getloadavg()
-    cpu_usage = (load15/os.cpu_count()) * 100
-    memory_usage = psutil.virtual_memory()[2]
+    weight = 0
+    memory_usage = get_memory_usage()
+    cpu_usage = get_cpu_usage()
 
-    if cpu_usage < 80 and memory_usage < 80:
-        send_msg(sock_cli, bytes("", encoding='UTF-8'))
-    else:
-        time.sleep(2)
+    weight += 100 - cpu_usage
+    weight += 100 - memory_usage
+
+    send_msg(sock_cli, bytes(str(weight), encoding='UTF-8'))
 
     sock_cli.close()
