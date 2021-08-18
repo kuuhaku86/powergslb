@@ -65,15 +65,15 @@ DB_ADDRESS = "127.0.0.1"
 DB_PORT = 3306
 
 operation = """
-    UPDATE `records`
-    SET `weight` = %s
-    WHERE `records`.`content_monitor_id` = (
-        SELECT `contents_monitors`.`id` 
-        FROM `contents_monitors`
-        JOIN `monitors` ON `contents_monitors`.`monitor_id` = `monitors`.`id`
-        JOIN `contents` ON `contents_monitors`.`content_id` = `contents`.`id`
-        WHERE `monitors`.`monitor` = "Load Balancing Check"
-        AND `contents`.`content` = %s
+    UPDATE records
+    SET weight = %s
+    WHERE records.content_monitor_id = (
+        SELECT contents_monitors.id 
+        FROM contents_monitors
+        JOIN monitors ON contents_monitors.monitor_id = monitors.id
+        JOIN contents ON contents_monitors.content_id = contents.id
+        WHERE monitors.monitor = "Load Balancing Check"
+        AND contents.content = %s
         LIMIT 1
     )
 """
