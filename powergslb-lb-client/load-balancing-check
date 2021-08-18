@@ -3,6 +3,7 @@
 import socket
 import sys
 import mysql.connector
+import logging
 
 ADDRESS = str(sys.argv[1])
 PORT = int(sys.argv[2])
@@ -23,25 +24,30 @@ operation = """
     )
 """
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try: 
+    logging.basicConfig(filename='/var/log/load-balancing.log', filemode='a', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-sock.connect((ADDRESS, PORT))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-data = sock.recv(1024)
-data = data.decode('UTF-8')
-data = int(float(data))
+    sock.connect((ADDRESS, PORT))
 
-connection = mysql.connector.connect(
-    host=DB_ADDRESS,
-    port=DB_PORT,
-    user="powergslb",
-    database="powergslb",
-    password="your-database-password-here")
+    data = sock.recv(1024)
+    data = data.decode('UTF-8')
+    data = int(float(data))
 
-cursor = connection.cursor()
+    connection = mysql.connector.connect(
+        host=DB_ADDRESS,
+        port=DB_PORT,
+        user="powergslb",
+        database="powergslb",
+        password="your-database-password-here")
 
-cursor.execute(operation, (data, ADDRESS, ))
+    cursor = connection.cursor()
 
-connection.commit()
+    cursor.execute(operation, (data, ADDRESS, ))
 
-cursor.close()
+    connection.commit()
+
+    cursor.close()
+except Exception:
+    logging.exception("message")
