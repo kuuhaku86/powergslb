@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 
 import netaddr
 
@@ -21,10 +22,20 @@ class PowerDNSContentHandler(AbstractContentHandler):
 
             fallback_records = {}
             live_records = {}
+            weights = []
 
             for record in qtype_records[qtype]:
                 if not self._is_in_view(record):
                     continue
+
+                if record['weight'] not in weights:
+                    if record['weight'] < 1:
+                        weight = 1
+                    else:
+                        weight = record['weight']
+
+                    for i in range(weight):
+                        weights.append(record['weight'])
 
                 if record['fallback']:
                     if record['weight'] not in fallback_records:
@@ -39,9 +50,9 @@ class PowerDNSContentHandler(AbstractContentHandler):
                     live_records[record['weight']].append(record)
 
             if live_records:
-                filtered_records = live_records[max(live_records)]
+                filtered_records = live_records[random.choice(weights)]
             elif fallback_records:
-                filtered_records = fallback_records[max(fallback_records)]
+                filtered_records = fallback_records[random.choice(weights)]
             else:
                 filtered_records = []
 
@@ -69,7 +80,8 @@ class PowerDNSContentHandler(AbstractContentHandler):
     def _is_in_view(self, record):
         result = False
         try:
-            result = bool(netaddr.smallest_matching_cidr(self.remote_ip, record.get('rule').split()))
+            result = bool(netaddr.smallest_matching_cidr(
+                self.remote_ip, record.get('rule').split()))
         except (AttributeError, netaddr.AddrFormatError, ValueError) as e:
             logging.error('{}: record id {} view rule invalid: {}: {}'.format(
                 type(self).__name__, record['id'], type(e).__name__, e))
@@ -77,7 +89,8 @@ class PowerDNSContentHandler(AbstractContentHandler):
         return result
 
     def _remote_ip_persistence(self, records):
-        persistence_value = netaddr.IPAddress(self.remote_ip).value >> records[0]['persistence']
+        persistence_value = netaddr.IPAddress(
+            self.remote_ip).value >> records[0]['persistence']
         return records[hash(persistence_value) % len(records)]
 
     def _split_records(self, records, v3_format=False):
@@ -106,10 +119,12 @@ class PowerDNSContentHandler(AbstractContentHandler):
         for record in records:
             if v3_format and record['qtype'] in ['MX', 'SRV']:
                 names = ['qname', 'qtype', 'content', 'ttl', 'priority']
-                values = [record['qname'], record['qtype'], record['content'], record['ttl'], record['priority']]
+                values = [record['qname'], record['qtype'],
+                          record['content'], record['ttl'], record['priority']]
             else:
                 names = ['qname', 'qtype', 'content', 'ttl']
-                values = [record['qname'], record['qtype'], record['content'], record['ttl']]
+                values = [record['qname'], record['qtype'],
+                          record['content'], record['ttl']]
 
             result.append(dict(zip(names, values)))
 
