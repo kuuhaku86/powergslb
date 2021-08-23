@@ -1,0 +1,53 @@
+#!/usr/bin/env python2.7
+
+import socket
+import sys
+import mysql.connector
+import logging
+
+ADDRESS = str(sys.argv[1])
+PORT = int(sys.argv[2])
+DB_ADDRESS = "127.0.0.1"
+DB_PORT = 3306
+
+operation = """
+    UPDATE `records`
+    SET `weight` = %s
+    WHERE `records`.`content_monitor_id` = (
+        SELECT `contents_monitors`.`id` 
+        FROM `contents_monitors`
+        JOIN `monitors` ON `contents_monitors`.`monitor_id` = `monitors`.`id`
+        JOIN `contents` ON `contents_monitors`.`content_id` = `contents`.`id`
+        WHERE `monitors`.`monitor` = "Load Balancing Check"
+        AND `contents`.`content` = %s
+        LIMIT 1
+    )
+"""
+
+try: 
+    logging.basicConfig(filename='/var/log/load-balancing.log', filemode='a', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    sock.connect((ADDRESS, PORT))
+
+    data = sock.recv(1024)
+    data = data.decode('UTF-8')
+    data = int(float(data))
+
+    connection = mysql.connector.connect(
+        host=DB_ADDRESS,
+        port=DB_PORT,
+        user="powergslb",
+        database="powergslb",
+        password="your-database-password-here")
+
+    cursor = connection.cursor()
+
+    cursor.execute(operation, (data, ADDRESS, ))
+
+    connection.commit()
+
+    cursor.close()
+except Exception:
+    logging.exception("message")
