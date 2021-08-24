@@ -29,12 +29,7 @@ class PowerDNSContentHandler(AbstractContentHandler):
                     continue
 
                 if record['weight'] not in weights:
-                    if record['weight'] < 1:
-                        weight = 1
-                    else:
-                        weight = record['weight']
-
-                    for i in range(weight):
+                    for i in range(record['weight'] + 1):
                         weights.append(record['weight'])
 
                 if record['fallback']:
