@@ -18,7 +18,7 @@ def get_memory_usage():
 
 
 def rescale(value):
-    return int((value / 100) * 5)
+    return round((value / 100) * 5)
 
 
 sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
