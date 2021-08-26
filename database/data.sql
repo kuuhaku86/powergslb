@@ -449,7 +449,7 @@ INSERT INTO `monitors` (`id`, `monitor`, `monitor_json`)
 VALUES (
         7,
         'Load Balancing Check',
-        '{"type": "exec", "args": ["/etc/powergslb/load-balancing-check", "%(content)s", "8600"], "interval": 1800, "timeout": 1, "fall": 3, "rise": 5}'
+        '{"type": "exec", "args": ["/etc/powergslb/load-balancing-check", "%(content)s", "8600"], "interval": 1800, "timeout": 5, "fall": 3, "rise": 5}'
     );
 INSERT INTO `contents_monitors` (`id`, `content_id`, `monitor_id`)
 VALUES (1, 1, 1);

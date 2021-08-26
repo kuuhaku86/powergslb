@@ -318,7 +318,7 @@ docker pull docker.io/kuuhaku86/powergslb:"$VERSION"
 docker run -itd --name powergslb --hostname powergslb \
     -p 53:53/tcp -p 53:53/udp -p 443:443/tcp \
     --tmpfs /run --tmpfs /tmp -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    docker.io/kuuhaku86/powergslb:"$VERSION"
+    kuuhaku86/powergslb:"$VERSION"
 
 docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' powergslb
 

@@ -16,6 +16,18 @@ def get_cpu_usage():
 def get_memory_usage():
     return psutil.virtual_memory()[2]
 
+def convert_to_mbyte(value):
+    return value/1024./1024.
+
+def get_current_bandwith():
+    old_value = psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv
+
+    time.sleep(1)
+
+    new_value = psutil.net_io_counters().bytes_sent + psutil.net_io_counters().bytes_recv
+
+    return convert_to_mbyte(new_value - old_value if new_value > old_value else 0.0)
+
 
 def rescale(value):
     return round((value / 100) * 5)
@@ -33,9 +45,14 @@ while True:
     weight = 0
     memory_usage = get_memory_usage()
     cpu_usage = get_cpu_usage()
+    current_bandwith = get_current_bandwith()
+    bandwith_capacity = float(os.environ['BANDWITH_CAPACITY'])
 
     weight += rescale(100 - cpu_usage)
     weight += rescale(100 - memory_usage)
+    weight += rescale(
+        (bandwith_capacity - current_bandwith) * 100.0 / bandwith_capacity
+    )
 
     send_msg(sock_cli, bytes(str(weight), encoding='UTF-8'))
 
