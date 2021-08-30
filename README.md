@@ -351,7 +351,8 @@ Run with docker
 ```
 VERSION=1.7.5
 
-docker run -itd -p 8600:8600/tcp -p 8600:8600/udp -e BANDWITH_CAPACITY=[Your Internet Bandwith] \
+docker run -itd --net=host -e INTERFACE=[Your Internet Interface] \
+    -e BANDWITH_CAPACITY=[Your Internet Bandwith] --name powergslb-lb-client \
     docker.io/kuuhaku86/powergslb-lb-client:"$VERSION"
   
 # Use this for testing (Change 1G with memory that you want to be occupied)
