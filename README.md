@@ -352,7 +352,9 @@ Run with docker
 VERSION=1.7.5
 
 docker run -itd --net=host -e INTERFACE=[Your Internet Interface] \
-    -e BANDWITH_CAPACITY=[Your Internet Bandwith] --name powergslb-lb-client \
+    -e BANDWITH_CAPACITY=[Your Internet Bandwith] -e CPU_PRIORITY=[Integer CPU Pirority] \
+    -e MEMORY_PRIORITY=[Integer Memory Pirority] -e BANDWITH_PRIORITY=[Integer BANDWITH Pirority] \
+    --name powergslb-lb-client \
     docker.io/kuuhaku86/powergslb-lb-client:"$VERSION"
   
 # Use this for testing (Change 1G with memory that you want to be occupied)

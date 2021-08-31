@@ -50,8 +50,13 @@ def get_current_bandwith():
     return count_current_bandwith()
 
 
-def rescale(value):
-    return round((value / 100) * 5)
+def rescale(value, priority_parameter=""):
+    priority = 5
+
+    if priority_parameter in os.environ:
+        priority = float(os.environ[priority_parameter])
+
+    return round((value / 100) * priority)
 
 
 def thread_bandwith_counter(threadname):
@@ -67,14 +72,9 @@ def thread_bandwith_counter(threadname):
         current_data_receive = get_interface().bytes_recv
 
         if current_data_time_counter >= 60:
-            print(current_bandwith)
-            print(start_data_receive)
-            print(current_data_time_counter)
-            print(current_data_receive)
             current_bandwith = count_current_bandwith()
             start_data_receive = get_interface().bytes_recv
             current_data_time_counter = 0
-            print(get_current_bandwith())
 
         time.sleep(1.0)
 
@@ -97,10 +97,11 @@ if __name__ == "__main__":
         current_bandwith = get_current_bandwith()
         bandwith_capacity = float(os.environ['BANDWITH_CAPACITY'])
 
-        weight += rescale(100 - cpu_usage)
-        weight += rescale(100 - memory_usage)
+        weight += rescale(100 - cpu_usage, "CPU_PRIORITY")
+        weight += rescale(100 - memory_usage, "MEMORY_PRIORITY")
         weight += rescale(
-            (bandwith_capacity - current_bandwith) * 100.0 / bandwith_capacity
+            (bandwith_capacity - current_bandwith) * 100.0 / bandwith_capacity,
+            "BANDWITH_PRIORITY"
         )
 
         send_msg(sock_cli, bytes(str(weight), encoding='UTF-8'))
